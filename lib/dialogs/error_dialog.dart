@@ -3,11 +3,11 @@ import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void showErrorDialog(
-    {required BuildContext context,
-    required String message,
-    Function? function,
-    bool login = false}) {
+void showErrorDialog({
+  required BuildContext context,
+  required String message,
+  Function? function,
+}) {
   final theme = Theme.of(context).textTheme;
   showDialog(
     context: context,
@@ -16,7 +16,7 @@ void showErrorDialog(
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 0.1.sw),
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 0.1.sw),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,
@@ -39,18 +39,24 @@ void showErrorDialog(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(
+                height: 30.h,
+              ),
               SvgPicture.asset(
                 'assets/logo/goose.svg',
                 width: 0.3.sw,
               ),
-              SizedBox(height: 30),
+              SizedBox(
+                height: 30.h,
+              ),
               Text(
                 '$message',
                 textAlign: TextAlign.center,
-                style: theme.bodyText1,
+                style: theme.bodyText2,
               ),
-              SizedBox(height: 20),
+              SizedBox(
+                height: 20.h,
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -63,25 +69,15 @@ void showErrorDialog(
                   ),
                   child: Text(
                     'ลองอีกครั้ง',
-                    style: theme.bodyText1!.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              if (login)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    if (function != null) function();
-                  },
-                  child: Text(
-                    'ลืมรหัสผ่าน',
-                    style: theme.bodyText1!.copyWith(
-                      decoration: TextDecoration.underline,
+                    style: theme.bodyText2!.copyWith(
+                      color: Colors.white,
                     ),
                   ),
                 ),
-              SizedBox(height: 10),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
             ],
           ),
         ),

@@ -7,8 +7,8 @@ final baseTheme = ThemeData(
   brightness: Brightness.light,
   textTheme: GoogleFonts.k2dTextTheme(
     TextTheme(
-      bodyText1: TextStyle(fontSize: 16.sp),
-      bodyText2: TextStyle(fontSize: 18.sp),
+      bodyText1: TextStyle(fontSize: 18.sp),
+      bodyText2: TextStyle(fontSize: 16.sp),
       headline6: TextStyle(
         fontSize: 20.sp,
       ),

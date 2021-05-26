@@ -31,4 +31,9 @@ class LoginProvider {
     
     return '';
   }
+
+  void clear() {
+    _emailController.text = '';
+    _passwordController.text = '';
+  }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 void showLoadingDialog(BuildContext context) {
   showGeneralDialog(
     barrierLabel: 'loading',
-    barrierDismissible: true,
+    barrierDismissible: false,
     barrierColor: Colors.white.withOpacity(0.5),
     transitionDuration: Duration(milliseconds: 50),
     context: context,

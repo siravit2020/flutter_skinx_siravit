@@ -25,15 +25,16 @@ class VioletCornerWidget extends StatelessWidget {
       body: Container(
         color: colorViolet,
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 0.05.sw,
+            horizontal: 0.08.sw,
           ),
           child: widget,
         ),

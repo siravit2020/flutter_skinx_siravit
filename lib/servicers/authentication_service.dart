@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthenticationServices {
   Future<bool> checkUserSigned() async {
     final user = FirebaseAuth.instance.currentUser;
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(Duration(milliseconds: 1000));
     return user != null;
   }
 

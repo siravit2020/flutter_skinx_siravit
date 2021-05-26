@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_skinx_siravit/widgets/logo.dart';
+
 
 class SplashScreen extends StatelessWidget {
   @override
@@ -17,16 +18,16 @@ class SplashScreen extends StatelessWidget {
           if (snapshot.hasData) {
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               if (snapshot.data!)
-                NavigationService.instance.navigateTo('party');
+                NavigationService.instance.navigateToReplacement('home');
               else
-                NavigationService.instance.navigateTo('login');
+                NavigationService.instance.navigateToReplacement('login');
             });
           } else if (snapshot.hasError) {
             return _ErrorWidget(
               errorMessage: snapshot.error,
             );
           }
-          return _Logo();
+          return Logo();
         },
       ),
     );
@@ -44,7 +45,7 @@ class _ErrorWidget extends StatelessWidget {
       children: [
         const Icon(
           Icons.error_outline,
-          color: Colors.red,
+          color: colorRed,
           size: 60,
         ),
         Padding(
@@ -56,27 +57,4 @@ class _ErrorWidget extends StatelessWidget {
   }
 }
 
-class _Logo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/logo/goose.svg',
-            height: 0.15.sh,
-          ),
-          SizedBox(
-            width: 15.w,
-          ),
-          Text(
-            'Party\nGoose',
-            style: theme.headline1,
-          ),
-        ],
-      ),
-    );
-  }
-}
+

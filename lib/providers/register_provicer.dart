@@ -9,7 +9,7 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  TypeTextField typeError = TypeTextField.none;
+  TypeTextField _typeError = TypeTextField.none;
   String _messageError = '';
   bool _checkBoxValue = false;
 
@@ -28,21 +28,28 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void check() async{
+  TypeTextField get typeError => _typeError;
+
+  set typeError(value) {
+    _typeError = value;
+    notifyListeners();
+  }
+
+  void check() async {
     String name = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
     bool isValidate = EmailValidator.validate(email);
 
-    typeError = TypeTextField.name;
+    _typeError = TypeTextField.name;
     if (name.isEmpty) {
       _messageError = 'กรุณากรอกชื่อ';
       notifyListeners();
       return;
     }
 
-    typeError = TypeTextField.email;
+    _typeError = TypeTextField.email;
     if (email.isEmpty) {
       _messageError = 'กรุณากรอกอีเมล';
       notifyListeners();
@@ -53,7 +60,7 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
       return;
     }
 
-    typeError = TypeTextField.password;
+    _typeError = TypeTextField.password;
     if (password.isEmpty) {
       _messageError = 'กรุณากรอกรหัสผ่าน';
       notifyListeners();
@@ -69,26 +76,33 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
       return;
     }
 
-    typeError = TypeTextField.confirmPassword;
+    _typeError = TypeTextField.confirmPassword;
     if (password != confirmPassword) {
       _messageError = 'กรุณากรอกรหัสผ่านให้ตรงกัน';
       notifyListeners();
       return;
     }
 
-    typeError = TypeTextField.checkBox;
+    _typeError = TypeTextField.checkBox;
     if (!_checkBoxValue) {
       _messageError = 'กรุณากดยอมรับเงื่อนไขและข้อตกลง';
       notifyListeners();
       return;
     }
 
-    typeError = TypeTextField.none;
+    
+    _typeError = TypeTextField.none;
     _messageError = '';
     notifyListeners();
-    
-    
+  }
 
-    
+  void clear() {
+    _nameController.text = '';
+    _emailController.text = '';
+    _passwordController.text = '';
+    _confirmPasswordController.text = '';
+    _typeError = TypeTextField.none;
+    _messageError = '';
+    _checkBoxValue = false;
   }
 }

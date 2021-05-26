@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_skinx_siravit/constants/type_text_field.dart';
+import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
 import 'package:flutter_skinx_siravit/providers/create_party_provider.dart';
+import 'package:flutter_skinx_siravit/providers/party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/register_provicer.dart';
+import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/widgets/fill_button.dart';
 import 'package:flutter_skinx_siravit/widgets/violet_corner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,11 +25,11 @@ class CreatePartyPage extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         children: [
           SizedBox(
-            height: 40,
+            height: 40.h,
           ),
           PartyName(),
           SizedBox(
-            height: 20,
+            height: 20.h,
           ),
           _TiTleWidget(
             iconData: Icons.collections_outlined,
@@ -33,49 +37,74 @@ class CreatePartyPage extends StatelessWidget {
           ),
           _AddImage(),
           SizedBox(
-            height: 15,
-          ),
-          _TiTleWidget(
-            iconData: Icons.campaign_outlined,
-            title: 'เพิ่มรายระเอียดเกี่ยวกับปาร์ตี้',
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          _TextFieldDescription(),
-          SizedBox(
-            height: 20,
+            height: 15.h,
           ),
           _TiTleWidget(
             iconData: Icons.groups_outlined,
             title: 'ระบุจำนวณสมาชิกที่ต้องการ (ไม่รวมผู้สร้างปาร์ตี้)',
           ),
+          SizedBox(
+            height: 10.h,
+          ),
           _CountMember(),
-          Container(
-            width: double.infinity,
-            child: TextButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                elevation: 0,
-                shape: StadiumBorder(),
-                side: BorderSide(color: colorViolet),
-                padding: EdgeInsets.symmetric(
-                  vertical: 10,
-                ),
-              ),
-              child: Text(
-                'สร้างปาร์ตี้',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2!
-                    .copyWith(color: colorViolet),
-              ),
-            ),
+          SizedBox(
+            height: 30.h,
+          ),
+          _CreatePartyButton(),
+          SizedBox(
+            height: 20.h,
           ),
         ],
       ),
     );
+  }
+}
+
+class _CreatePartyButton extends StatelessWidget {
+  const _CreatePartyButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: () async {
+          await _addParty(context);
+        },
+        style: ElevatedButton.styleFrom(
+          primary: colorRed,
+          elevation: 0,
+          shape: StadiumBorder(),
+          padding: EdgeInsets.symmetric(
+            vertical: 10,
+          ),
+        ),
+        child: Text(
+          'สร้างปาร์ตี้',
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _addParty(BuildContext context) async {
+    final createPartyProvider =
+        context.read<CreatePartyChnageNotifierProvider>();
+    final partyProvider = context.read<PartyChangeNotifierProvider>();
+    final result = await createPartyProvider.check();
+    if (result) {
+      showLoadingDialog(context);
+      await createPartyProvider.updateParty();
+      await partyProvider.readParty();
+      partyProvider.update();
+      NavigationService.instance.pop();
+      NavigationService.instance.navigateToReplacement('home');
+    }
   }
 }
 
@@ -112,6 +141,11 @@ class _CountMember extends StatelessWidget {
                 }
               },
               child: TextFormField(
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                ],
                 controller: createPartyProvider.memberController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -137,12 +171,15 @@ class _MemberItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    context.select((CreatePartyChnageNotifierProvider c) => c.countMember);
     final countMember =
-        context.read<CreatePartyChnageNotifierProvider>().countMember;
+        context.select((CreatePartyChnageNotifierProvider c) => c.countMember);
+    final createPartyProvider =
+        context.read<CreatePartyChnageNotifierProvider>();
     return GestureDetector(
       onTap: () {
-        context.read<CreatePartyChnageNotifierProvider>().countMember = count;
+        createPartyProvider.countMember = count;
+        if (createPartyProvider.memberController.text.isNotEmpty)
+          createPartyProvider.memberController.text = '';
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 100),
@@ -156,41 +193,9 @@ class _MemberItem extends StatelessWidget {
         ),
         child: Text(
           '$count',
-          style: theme.bodyText1!.copyWith(
+          style: theme.bodyText2!.copyWith(
             color: (countMember == count) ? Colors.white : Colors.grey.shade900,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TextFieldDescription extends StatelessWidget {
-  const _TextFieldDescription({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final createPartyProvider =
-        context.read<CreatePartyChnageNotifierProvider>();
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: TextField(
-        controller: createPartyProvider.descriptionController,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        minLines: 4,
-        maxLength: 300,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          counterText: "",
         ),
       ),
     );
@@ -247,7 +252,7 @@ class _TiTleWidget extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: theme.bodyText2,
+            style: theme.bodyText1,
           ),
         ),
       ],
@@ -298,10 +303,13 @@ class PartyName extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 10, left: 20),
+                    padding: EdgeInsets.only(
+                      top: 10.h,
+                      left: 20,
+                    ),
                     child: Text(
                       'กรุณาตั้งชื่อปาร์ตี้',
-                      style: theme.bodyText1!.copyWith(color: colorRed),
+                      style: theme.bodyText2!.copyWith(color: colorRed),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -369,12 +377,8 @@ class _AddImageButton extends StatelessWidget {
     File? croppedFile = await ImageCropper.cropImage(
         sourcePath: file!.path,
         aspectRatioPresets: Platform.isAndroid
-            ? [
-                CropAspectRatioPreset.square,
-              ]
-            : [
-                CropAspectRatioPreset.original,
-              ],
+            ? [CropAspectRatioPreset.square]
+            : [CropAspectRatioPreset.original],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,

@@ -1,17 +1,20 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_skinx_siravit/server/cloud_firestore.dart';
+import 'package:flutter_skinx_siravit/server/cloud_storage.dart';
+import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 
 class CreatePartyChnageNotifierProvider extends ChangeNotifier {
   TextEditingController _partyNameController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
   TextEditingController _memberController = TextEditingController();
   int _countMember = 1;
   File? _image;
   bool _error = false;
 
   TextEditingController get partyNameController => _partyNameController;
-  TextEditingController get descriptionController => _descriptionController;
   TextEditingController get memberController => _memberController;
 
   int get countMember => _countMember;
@@ -43,10 +46,41 @@ class CreatePartyChnageNotifierProvider extends ChangeNotifier {
       _error = false;
   }
 
-  void check() {
+  void clear() {
+    _partyNameController.text = '';
+    _memberController.text = '';
+    _countMember = 1;
+    _image = null;
+    _error = false;
+  }
+
+  Future<bool> check() async {
     checkPartyName();
     if (!_error) {
-      
+      return true;
     }
+    notifyListeners();
+    return false;
+  }
+
+  Future<void> updateParty() async {
+    final docReference = await CloudFirestoreDb().addParty(
+        FirebaseAuth.instance.currentUser!.uid,
+        _partyNameController.text,
+        _countMember);
+    CloudFirestoreDb().updateUserParty(
+        FirebaseAuth.instance.currentUser!.uid, docReference.id);
+    if (_image != null) {
+      final imageUrl = await CloudStorageDb().uploadImage(
+        docReference.id,
+        _image!,
+      );
+      print('image $imageUrl');
+      await CloudFirestoreDb().updateImage(
+        docReference.id,
+        imageUrl,
+      );
+    }
+    clear();
   }
 }

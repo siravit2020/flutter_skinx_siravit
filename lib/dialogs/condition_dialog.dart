@@ -34,7 +34,9 @@ void showConditionDialog(BuildContext context) {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(
+                height: 30,
+              ),
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(16),
@@ -50,13 +52,15 @@ void showConditionDialog(BuildContext context) {
                         child: Text(
                           '$i. รับผมหน่อยครับ',
                           textAlign: TextAlign.center,
-                          style: theme.bodyText1,
+                          style: theme.bodyText2,
                         ),
                       ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(
+                height: 20,
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -70,7 +74,9 @@ void showConditionDialog(BuildContext context) {
                   child: Text('ปิด'),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),

@@ -7,6 +7,7 @@ import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/view/register.dart';
 import 'package:flutter_skinx_siravit/widgets/fill_button.dart';
+import 'package:flutter_skinx_siravit/widgets/logo.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +18,7 @@ class LoginPage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: 0.1.sw,
+          horizontal: 0.08.sw,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +35,6 @@ class LoginPage extends StatelessWidget {
 class _LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
     final loginProvider = context.read<LoginProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +44,7 @@ class _LoginForm extends StatelessWidget {
           hintText: 'อีเมล',
         ),
         SizedBox(
-          height: 20,
+          height: 20.h,
         ),
         _LoginTextField(
           controller: loginProvider.passwordController,
@@ -53,25 +53,9 @@ class _LoginForm extends StatelessWidget {
           obscureText: true,
         ),
         SizedBox(
-          height: 10.h,
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: GestureDetector(
-            onTap: () {},
-            child: Text(
-              'ลืมรหัสผ่าน',
-              style: theme.bodyText1!.copyWith(
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 40.h,
+          height: 60.h,
         ),
         FillButton(
-          context: context,
           title: 'เข้าสู่ระบบ',
           color: colorViolet,
           function: () {
@@ -79,10 +63,9 @@ class _LoginForm extends StatelessWidget {
           },
         ),
         SizedBox(
-          height: 10,
+          height: 10.h,
         ),
         FillButton(
-          context: context,
           title: 'สร้างบัญชีผู้ใช้',
           color: colorRed,
           function: () {
@@ -102,7 +85,6 @@ class _LoginForm extends StatelessWidget {
       showErrorDialog(
         context: context,
         message: messageError,
-        login: true,
       );
     else {
       showLoadingDialog(context);
@@ -112,12 +94,12 @@ class _LoginForm extends StatelessWidget {
       );
       NavigationService.instance.pop();
       if (result == 'success') {
-        NavigationService.instance.navigateTo('party');
+        loginProvider.clear();
+        NavigationService.instance.navigateTo('home');
       } else
         showErrorDialog(
           context: context,
           message: result,
-          login: true,
         );
     }
   }
@@ -144,11 +126,11 @@ class _LoginTextField extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: colorGrey,
         borderRadius: BorderRadius.circular(40),
       ),
       child: TextFormField(
-        style: theme.bodyText1,
+        style: theme.bodyText2,
         controller: controller,
         maxLength: max,
         obscureText: obscureText,
@@ -168,22 +150,7 @@ class _Logo extends StatelessWidget {
     final theme = Theme.of(context).textTheme;
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/logo/goose.svg',
-              height: 0.15.sh,
-            ),
-            SizedBox(
-              width: 15.w,
-            ),
-            Text(
-              'Party\nGoose',
-              style: theme.headline1,
-            ),
-          ],
-        ),
+        Logo(),
         SizedBox(
           height: 20.h,
         ),

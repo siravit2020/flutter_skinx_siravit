@@ -21,13 +21,16 @@ class RegisterPage extends StatelessWidget {
       widget: ListView(
         physics: BouncingScrollPhysics(),
         children: [
+          SizedBox(
+            height: 40.h,
+          ),
           _RegisterTextField(
             title: 'ชื่อผู้ใช้งาน',
             type: TypeTextField.name,
             controller: registerProvider.nameController,
           ),
           SizedBox(
-            height: 10,
+            height: 10.h,
           ),
           _RegisterTextField(
             title: 'อีเมล',
@@ -35,7 +38,7 @@ class RegisterPage extends StatelessWidget {
             controller: registerProvider.emailController,
           ),
           SizedBox(
-            height: 10,
+            height: 10.h,
           ),
           _RegisterTextField(
             title: 'รหัสผ่าน',
@@ -44,7 +47,7 @@ class RegisterPage extends StatelessWidget {
             obscureText: true,
           ),
           SizedBox(
-            height: 10,
+            height: 10.h,
           ),
           _RegisterTextField(
             title: 'ยืนยันรหัสผ่าน',
@@ -53,14 +56,13 @@ class RegisterPage extends StatelessWidget {
             obscureText: true,
           ),
           SizedBox(
-            height: 30,
+            height: 30.h,
           ),
           _ConditionWidget(),
           SizedBox(
-            height: 40,
+            height: 40.h,
           ),
           FillButton(
-            context: context,
             title: 'ยืนยัน',
             color: colorViolet,
             function: () async {
@@ -88,7 +90,8 @@ class RegisterPage extends StatelessWidget {
       NavigationService.instance.pop();
 
       if (result == 'success') {
-        NavigationService.instance.navigateTo('party');
+        registerProvider.clear();
+        NavigationService.instance.navigateTo('home');
       } else
         showErrorDialog(
           context: context,
@@ -121,11 +124,11 @@ class _ConditionWidget extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'ฉันยอมรับ',
-                      style: theme.bodyText2,
+                      style: theme.bodyText1,
                     ),
                     TextSpan(
                       text: ' เงื่อนไขและข้อตกลง ',
-                      style: theme.bodyText2!.copyWith(
+                      style: theme.bodyText1!.copyWith(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
@@ -136,7 +139,7 @@ class _ConditionWidget extends StatelessWidget {
                     ),
                     TextSpan(
                       text: 'เกี่ยวกับการใช้งาน',
-                      style: theme.bodyText2,
+                      style: theme.bodyText1,
                     ),
                   ],
                 ),
@@ -148,10 +151,10 @@ class _ConditionWidget extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 10.h),
               child: Text(
                 registerProvider.messageError,
-                style: theme.bodyText1!.copyWith(color: colorRed),
+                style: theme.bodyText2!.copyWith(color: colorRed),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -183,10 +186,13 @@ class _RegisterTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 20, bottom: 5),
+          padding: EdgeInsets.only(
+            left: 20.w,
+            bottom: 5.h,
+          ),
           child: Text(
             title,
-            style: theme.bodyText2!,
+            style: theme.bodyText1!,
           ),
         ),
         Container(
@@ -200,6 +206,11 @@ class _RegisterTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
           ),
           child: TextFormField(
+            style: theme.bodyText2,
+            onChanged: (value) {
+              if (registerProvider.typeError == type)
+                registerProvider.typeError = TypeTextField.none;
+            },
             controller: controller,
             obscureText: obscureText,
             decoration: InputDecoration(
@@ -212,10 +223,10 @@ class _RegisterTextField extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 10.h),
               child: Text(
                 registerProvider.messageError,
-                style: theme.bodyText1!.copyWith(color: colorRed),
+                style: theme.bodyText2!.copyWith(color: colorRed),
                 textAlign: TextAlign.center,
               ),
             ),
