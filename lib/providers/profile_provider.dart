@@ -12,19 +12,18 @@ class ProfileChangeNotifierProvider extends ChangeNotifier {
   String? get name => _name;
   UserPartyModel? get userParty => _userParty;
 
-  ProfileChangeNotifierProvider() {
-    _name = FirebaseAuth.instance.currentUser!.displayName!;
-  }
+ 
   Future<void> initialData() async {
-    final result = await CloudFirestoreDb().getUserParty();
+    _name = FirebaseAuth.instance.currentUser!.displayName!;
+    var result = await CloudFirestoreDb().getUserParty();
     if (result != null) _userParty = UserPartyModel.fromJson(result.data()!);
     notifyListeners();
   }
 
-  void signOut() {
+  Future<void> signOut() async {
     _name = null;
     _userParty = null;
-    FirebaseAuth.instance.signOut();
-    NavigationService.instance.navigateToReplacement('login');
+    await FirebaseAuth.instance.signOut();
+    NavigationService.instance.navigateAndRemoveUntil('splash');
   }
 }

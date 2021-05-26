@@ -13,6 +13,10 @@ class NavigationService {
     return navigationKey.currentState!.pushReplacementNamed(_rn);
   }
 
+  Future<dynamic> navigateAndRemoveUntil(String _rn) {
+    return navigationKey.currentState!.pushNamedAndRemoveUntil(_rn, (route) => false);
+  }
+
   Future<dynamic> navigateTo(String _rn) {
     return navigationKey.currentState!.pushNamed(_rn);
   }

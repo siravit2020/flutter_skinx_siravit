@@ -64,14 +64,14 @@ class CreatePartyChnageNotifierProvider extends ChangeNotifier {
   }
 
   Future<void> updateParty() async {
-    final docReference = await CloudFirestoreDb().addParty(
+    var docReference = await CloudFirestoreDb().addParty(
         FirebaseAuth.instance.currentUser!.uid,
         _partyNameController.text,
         _countMember);
     CloudFirestoreDb().updateUserParty(
         FirebaseAuth.instance.currentUser!.uid, docReference.id);
     if (_image != null) {
-      final imageUrl = await CloudStorageDb().uploadImage(
+      var imageUrl = await CloudStorageDb().uploadImage(
         docReference.id,
         _image!,
       );

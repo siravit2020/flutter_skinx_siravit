@@ -100,10 +100,9 @@ class _CreatePartyButton extends StatelessWidget {
     if (result) {
       showLoadingDialog(context);
       await createPartyProvider.updateParty();
-      await partyProvider.readParty();
-      partyProvider.update();
+      
       NavigationService.instance.pop();
-      NavigationService.instance.navigateToReplacement('home');
+      NavigationService.instance.navigateAndRemoveUntil('home');
     }
   }
 }

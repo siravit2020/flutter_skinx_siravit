@@ -95,7 +95,7 @@ class _LoginForm extends StatelessWidget {
       NavigationService.instance.pop();
       if (result == 'success') {
         loginProvider.clear();
-        NavigationService.instance.navigateTo('home');
+        NavigationService.instance.navigateAndRemoveUntil('home');
       } else
         showErrorDialog(
           context: context,

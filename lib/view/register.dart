@@ -91,7 +91,7 @@ class RegisterPage extends StatelessWidget {
 
       if (result == 'success') {
         registerProvider.clear();
-        NavigationService.instance.navigateTo('home');
+        NavigationService.instance.navigateAndRemoveUntil('home');
       } else
         showErrorDialog(
           context: context,

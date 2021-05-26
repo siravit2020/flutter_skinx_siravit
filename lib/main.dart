@@ -9,6 +9,7 @@ import 'package:flutter_skinx_siravit/providers/profile_provider.dart';
 import 'package:flutter_skinx_siravit/providers/register_provicer.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/view/create_party.dart';
+import 'package:flutter_skinx_siravit/view/load_party.dart';
 import 'package:flutter_skinx_siravit/view/login.dart';
 import 'package:flutter_skinx_siravit/providers/login_provider.dart';
 import 'package:flutter_skinx_siravit/view/home.dart';
@@ -88,6 +89,7 @@ class MyApp extends StatelessWidget {
               "register": (_) => RegisterPage(),
               "home": (_) => HomePage(),
               "party": (_) => PartyPage(),
+              "loadParty": (_) => LoadPartyPage(),
               "createParty": (_) => CreatePartyPage(),
               "profile": (_) => ProfilePage(),
             },

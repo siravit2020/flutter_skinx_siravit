@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
                     height: 20.h,
                   ),
                   Text(
-                    'Siravit Pichphol',
+                    profileProvider.name != null ? profileProvider.name! : '',
                     style: theme.headline5,
                   ),
                   SizedBox(
@@ -66,7 +66,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-
 
 class _CountParty extends StatelessWidget {
   @override

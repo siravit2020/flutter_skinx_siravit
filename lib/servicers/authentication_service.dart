@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationServices {
   Future<bool> checkUserSigned() async {
-    final user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
     await Future.delayed(Duration(milliseconds: 1000));
     return user != null;
   }
@@ -20,6 +20,7 @@ class AuthenticationServices {
       } else if (e.code == 'email-already-in-use') {
         return 'มีบัญชีนี้อยู่ในระบบแล้ว';
       }
+      print(e.code);
       return 'การสมัครบัญชีผู้ใช้มีปัญหา';
     } catch (e) {
       print(e);

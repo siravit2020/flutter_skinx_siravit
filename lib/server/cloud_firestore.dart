@@ -56,7 +56,7 @@ class CloudFirestoreDb {
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>?> getUserParty() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     final users = FirebaseFirestore.instance.collection('users');
     final doc = await users.doc(uid).get();
     if (doc.exists) {
@@ -75,9 +75,9 @@ class CloudFirestoreDb {
     if (doc.data()!['member_list'] != null) {
       List<String> result = List<String>.from(doc.data()!['member_list']);
       result.add(uid);
-      partys.doc(partyId).update({'member_list': result});
+      await partys.doc(partyId).update({'member_list': result});
     } else {
-      partys.doc(partyId).update({
+      await partys.doc(partyId).update({
         'member_list': [uid]
       });
     }
@@ -87,14 +87,14 @@ class CloudFirestoreDb {
       if (docUser.data()!['party_list'] != null) {
         List<String> result = List<String>.from(docUser.data()!['party_list']);
         result.add(partyId);
-        users.doc(uid).update({'party_list': result});
+        await users.doc(uid).update({'party_list': result});
       } else {
-        users.doc(uid).update({
+        await users.doc(uid).update({
           'party_list': [partyId]
         });
       }
     } else {
-      users.doc(uid).set({
+      await users.doc(uid).set({
         'party_list': [partyId]
       });
     }

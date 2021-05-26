@@ -5,30 +5,32 @@ import 'package:flutter_skinx_siravit/server/cloud_firestore.dart';
 export 'package:provider/provider.dart';
 
 class PartyChangeNotifierProvider extends ChangeNotifier {
-  PartyChangeNotifierProvider() {
-    fakeDowload();
-  }
-  final currentUser = FirebaseAuth.instance.currentUser!.uid;
   List<PartyModel>? _listParty;
   List<String> _listPartyId = [];
+  bool _loading = true;
 
   List<PartyModel>? get listParty => _listParty;
 
-  set listParty(value) {
-    _listParty = value;
+  bool get loading => _loading;
+
+  set loading(value) {
+    _loading = value;
     notifyListeners();
   }
 
   Future<void> readParty() async {
-    final result = await CloudFirestoreDb().readParty();
+    String currentUser = FirebaseAuth.instance.currentUser!.uid;
+    var result = await CloudFirestoreDb().readParty();
     List<PartyModel> list = [];
+    List<String> listId = [];
     int index = 0;
+    print('index $index');
     for (int i = 0; i < result.length; i++) {
       PartyModel data = PartyModel.fromJson(result[i].data());
       if (data.memberList != []) {
         if (data.memberList!.length != data.memberMax) {
           list.add(data);
-          _listPartyId.add(result[index].id);
+          listId.add(result[index].id);
           if (list[index].memberList!.contains(currentUser)) {
             list[index].join = true;
           } else {
@@ -38,7 +40,7 @@ class PartyChangeNotifierProvider extends ChangeNotifier {
         }
       } else {
         list.add(data);
-        _listPartyId.add(result[index].id);
+        listId.add(result[index].id);
         if (list[index].memberList!.contains(currentUser)) {
           list[index].join = true;
         } else {
@@ -47,22 +49,27 @@ class PartyChangeNotifierProvider extends ChangeNotifier {
         index++;
       }
     }
+    print('restart provider');
     _listParty = list;
+    _listPartyId = listId;
+    _loading = false;
   }
 
   Future<void> updateMember(int index) async {
-    
     await CloudFirestoreDb().updateMember(
       _listPartyId[index],
       FirebaseAuth.instance.currentUser!.uid,
     );
     await readParty();
+    _loading = false;
+    update();
   }
 
   Future<void> fakeDowload() async {
-    clear();
+    _loading = true;
     await Future.delayed(Duration(milliseconds: 1000));
-    readParty().then((value) => update());
+    await readParty();
+    update();
   }
 
   void update() {

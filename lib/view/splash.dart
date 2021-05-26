@@ -18,9 +18,9 @@ class SplashScreen extends StatelessWidget {
           if (snapshot.hasData) {
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               if (snapshot.data!)
-                NavigationService.instance.navigateToReplacement('home');
+                NavigationService.instance.navigateAndRemoveUntil('home');
               else
-                NavigationService.instance.navigateToReplacement('login');
+                NavigationService.instance.navigateAndRemoveUntil('login');
             });
           } else if (snapshot.hasError) {
             return _ErrorWidget(

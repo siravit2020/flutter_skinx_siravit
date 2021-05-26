@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
+import 'package:flutter_skinx_siravit/models/party_model.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
-import 'package:flutter_skinx_siravit/widgets/fill_button.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PartyPage extends StatelessWidget {
   const PartyPage({
@@ -15,10 +14,11 @@ class PartyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final partyProvider = context.watch<PartyChangeNotifierProvider>();
-    final theme = Theme.of(context).textTheme;
+    final partyProvider = context.read<PartyChangeNotifierProvider>();
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(
+        top: 10,
+      ),
       child: StaggeredGridView.countBuilder(
         physics: BouncingScrollPhysics(),
         crossAxisCount: 2,
@@ -34,101 +34,20 @@ class PartyPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                  child: itemParty.imageUrl != null
-                      ? FadeInImage(
-                          placeholder: AssetImage('assets/images/white.png'),
-                          image: NetworkImage('${itemParty.imageUrl}'),
-                          fit: BoxFit.cover,
-                        )
-                      : Image.asset(
-                          'assets/images/party_time.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                  // Image.network('${itemParty.imageUrl}'),
+                _ImageWidget(
+                  itemParty: itemParty,
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${itemParty.title}',
-                        style: theme.bodyText1!
-                            .copyWith(fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                _Title(
+                  itemParty: itemParty,
                 ),
                 Divider(
                   height: 0,
                   color: colorBlack.withOpacity(0.3),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.groups_outlined,
-                            color: colorViolet,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            itemParty.memberList != null
-                                ? '${itemParty.memberList!.length}/${itemParty.memberMax}'
-                                : '0/${itemParty.memberMax}',
-                            style: theme.bodyText2!.copyWith(
-                              color: colorViolet,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Builder(builder: (context) {
-                        if (itemParty.host ==
-                            FirebaseAuth.instance.currentUser!.uid)
-                          return _FillButton(
-                            title: 'เจ้าของปาร์ตี้',
-                            color: colorRed,
-                            function: () async {},
-                          );
-                        else if (!itemParty.join!)
-                          return _FillButton(
-                            title: 'เข้าร่วม',
-                            color: colorViolet,
-                            function: () async {
-                              showLoadingDialog(context);
-                              await partyProvider.updateMember(index);
-                              await Future.delayed(
-                                  const Duration(milliseconds: 500));
-                              partyProvider.update();
-                              NavigationService.instance.pop();
-                            },
-                          );
-                        else
-                          return _FillButton(
-                            title: 'อยู่ในปาร์ตี้',
-                            color: colorGreyMedium,
-                            function: () async {},
-                          );
-                      }),
-                    ],
-                  ),
+                _Member(
+                  itemParty: itemParty,
+                  partyProvider: partyProvider,
+                  index: index,
                 )
               ],
             ),
@@ -140,12 +59,192 @@ class PartyPage extends StatelessWidget {
   }
 }
 
-class _FillButton extends StatelessWidget {
+class _Member extends StatelessWidget {
+  const _Member({
+    Key? key,
+    required this.itemParty,
+    required this.partyProvider,
+    required this.index,
+  }) : super(key: key);
+
+  final PartyModel itemParty;
+  final PartyChangeNotifierProvider partyProvider;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 10,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _CountMember(
+            itemParty: itemParty,
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          _ButtonMember(
+            itemParty: itemParty,
+            partyProvider: partyProvider,
+            index: index,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ButtonMember extends StatelessWidget {
+  const _ButtonMember({
+    Key? key,
+    required this.itemParty,
+    required this.partyProvider,
+    required this.index,
+  }) : super(key: key);
+
+  final PartyModel itemParty;
+  final PartyChangeNotifierProvider partyProvider;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        if (itemParty.host == FirebaseAuth.instance.currentUser!.uid)
+          return _JoinButton(
+            title: 'เจ้าของปาร์ตี้',
+            color: colorRed,
+            function: () async {},
+          );
+        else if (!itemParty.join!)
+          return _JoinButton(
+            title: 'เข้าร่วม',
+            color: colorViolet,
+            function: () async {
+              //showLoadingDialog(context);
+              partyProvider.loading = true;
+              await partyProvider.updateMember(index);
+              await Future.delayed(const Duration(milliseconds: 500));
+              //NavigationService.instance.pop();
+            },
+          );
+        else
+          return _JoinButton(
+            title: 'อยู่ในปาร์ตี้',
+            color: colorGreyMedium,
+            function: () async {},
+          );
+      },
+    );
+  }
+}
+
+class _CountMember extends StatelessWidget {
+  const _CountMember({
+    Key? key,
+    required this.itemParty,
+  }) : super(key: key);
+
+  final PartyModel itemParty;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    return Row(
+      children: [
+        Icon(
+          Icons.groups_outlined,
+          color: colorViolet,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          itemParty.memberList != null
+              ? '${itemParty.memberList!.length}/${itemParty.memberMax}'
+              : '0/${itemParty.memberMax}',
+          style: theme.bodyText2!.copyWith(
+            color: colorViolet,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    Key? key,
+    required this.itemParty,
+  }) : super(key: key);
+
+  final PartyModel itemParty;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 20,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${itemParty.title}',
+            style: theme.bodyText1!.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+  const _ImageWidget({
+    Key? key,
+    required this.itemParty,
+  }) : super(key: key);
+
+  final PartyModel itemParty;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(10),
+        topRight: Radius.circular(10),
+      ),
+      child: itemParty.imageUrl != null
+          ? FadeInImage(
+              placeholder: AssetImage('assets/images/white.png'),
+              image: NetworkImage('${itemParty.imageUrl}'),
+              fit: BoxFit.cover,
+            )
+          : Image.asset(
+              'assets/images/party_time.jpg',
+              fit: BoxFit.cover,
+            ),
+      // Image.network('${itemParty.imageUrl}'),
+    );
+  }
+}
+
+class _JoinButton extends StatelessWidget {
   final String title;
   final Color color;
   final Function function;
 
-  const _FillButton(
+  const _JoinButton(
       {Key? key,
       required this.title,
       required this.color,
