@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
-import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
+import 'package:flutter_skinx_siravit/dialogs/accept_dialog.dart';
+import 'package:flutter_skinx_siravit/dialogs/error_dialog.dart';
 import 'package:flutter_skinx_siravit/models/party_model.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
-import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class PartyPage extends StatelessWidget {
@@ -125,11 +125,26 @@ class _ButtonMember extends StatelessWidget {
             title: 'เข้าร่วม',
             color: colorViolet,
             function: () async {
-              //showLoadingDialog(context);
-              partyProvider.loading = true;
-              await partyProvider.updateMember(index);
-              await Future.delayed(const Duration(milliseconds: 500));
-              //NavigationService.instance.pop();
+              showAcceptDialog(
+                  context: context,
+                  function: () async {
+                    bool result = await partyProvider.updateMember(index);
+                    if (!result)
+                      showErrorDialog(
+                          context: context,
+                          message: 'สมาชิกครบจำนวณแล้ว',
+                          function: () async {
+                            partyProvider.loading = true;
+                            partyProvider.updateParty();
+                            await Future.delayed(
+                                const Duration(milliseconds: 500));
+                          });
+                    else {
+                      partyProvider.loading = true;
+                      partyProvider.updateParty();
+                      await Future.delayed(const Duration(milliseconds: 500));
+                    }
+                  });
             },
           );
         else

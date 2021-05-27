@@ -49,17 +49,20 @@ class PartyChangeNotifierProvider extends ChangeNotifier {
         index++;
       }
     }
-    print('restart provider');
     _listParty = list;
     _listPartyId = listId;
     _loading = false;
   }
 
-  Future<void> updateMember(int index) async {
-    await CloudFirestoreDb().updateMember(
+  Future<bool> updateMember(int index) async {
+    var result = await CloudFirestoreDb().updateMember(
       _listPartyId[index],
       FirebaseAuth.instance.currentUser!.uid,
     );
+    return result;
+  }
+
+  Future<void> updateParty() async {
     await readParty();
     _loading = false;
     update();

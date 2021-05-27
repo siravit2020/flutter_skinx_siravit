@@ -86,9 +86,7 @@ class RegisterPage extends StatelessWidget {
         registerProvider.passwordController.text,
         registerProvider.nameController.text,
       );
-
       NavigationService.instance.pop();
-
       if (result == 'success') {
         registerProvider.clear();
         NavigationService.instance.navigateAndRemoveUntil('home');

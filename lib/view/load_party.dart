@@ -12,8 +12,6 @@ class LoadPartyPage extends StatelessWidget {
     final loading =
         context.select((PartyChangeNotifierProvider p) => p.loading);
     final partyProvider = context.read<PartyChangeNotifierProvider>();
-    if (partyProvider.listParty != null)
-      print('restart2 ${partyProvider.listParty!.length}');
     return Container(
       color: colorViolet,
       child: Container(

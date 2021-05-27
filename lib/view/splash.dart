@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';

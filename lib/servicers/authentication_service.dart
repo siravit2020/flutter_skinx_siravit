@@ -12,7 +12,7 @@ class AuthenticationServices {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       userCredential.user?.updateProfile(displayName: name);
-      FirebaseAuth.instance.signOut();
+      
       return 'success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

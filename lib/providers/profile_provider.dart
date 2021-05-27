@@ -8,7 +8,6 @@ export 'package:provider/provider.dart';
 class ProfileChangeNotifierProvider extends ChangeNotifier {
   UserPartyModel? _userParty;
   String? _name;
-
   String? get name => _name;
   UserPartyModel? get userParty => _userParty;
 

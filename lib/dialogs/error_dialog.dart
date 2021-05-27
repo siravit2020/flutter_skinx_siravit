@@ -62,6 +62,7 @@ void showErrorDialog({
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    if (function != null) function();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: colorViolet,

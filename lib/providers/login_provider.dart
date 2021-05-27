@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
 export 'package:provider/provider.dart';
 
 class LoginProvider {

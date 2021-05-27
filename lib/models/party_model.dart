@@ -22,7 +22,6 @@ class PartyModel {
   String? imageUrl;
   List<String>? memberList;
   String host;
-
   int memberMax;
   String title;
   bool? join;

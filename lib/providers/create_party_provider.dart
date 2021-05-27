@@ -1,11 +1,9 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_skinx_siravit/server/cloud_firestore.dart';
 import 'package:flutter_skinx_siravit/server/cloud_storage.dart';
-import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
+
 
 class CreatePartyChnageNotifierProvider extends ChangeNotifier {
   TextEditingController _partyNameController = TextEditingController();

@@ -3,18 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
-import 'package:flutter_skinx_siravit/constants/type_text_field.dart';
 import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
 import 'package:flutter_skinx_siravit/providers/create_party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/register_provicer.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
-import 'package:flutter_skinx_siravit/widgets/fill_button.dart';
 import 'package:flutter_skinx_siravit/widgets/violet_corner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 class CreatePartyPage extends StatelessWidget {
   @override
@@ -37,7 +34,7 @@ class CreatePartyPage extends StatelessWidget {
           ),
           _AddImage(),
           SizedBox(
-            height: 15.h,
+            height: 20.h,
           ),
           _TiTleWidget(
             iconData: Icons.groups_outlined,
@@ -48,7 +45,7 @@ class CreatePartyPage extends StatelessWidget {
           ),
           _CountMember(),
           SizedBox(
-            height: 30.h,
+            height: 40.h,
           ),
           _CreatePartyButton(),
           SizedBox(
@@ -95,12 +92,10 @@ class _CreatePartyButton extends StatelessWidget {
   Future<void> _addParty(BuildContext context) async {
     final createPartyProvider =
         context.read<CreatePartyChnageNotifierProvider>();
-    final partyProvider = context.read<PartyChangeNotifierProvider>();
     final result = await createPartyProvider.check();
     if (result) {
       showLoadingDialog(context);
       await createPartyProvider.updateParty();
-      
       NavigationService.instance.pop();
       NavigationService.instance.navigateAndRemoveUntil('home');
     }
@@ -187,13 +182,13 @@ class _MemberItem extends StatelessWidget {
           horizontal: 5,
         ),
         decoration: BoxDecoration(
-          color: (countMember == count) ? colorViolet : Colors.grey.shade200,
+          color: (countMember == count) ? colorViolet : colorGrey,
           shape: BoxShape.circle,
         ),
         child: Text(
           '$count',
           style: theme.bodyText2!.copyWith(
-            color: (countMember == count) ? Colors.white : Colors.grey.shade900,
+            color: (countMember == count) ? colorWhite : colorBlack,
           ),
         ),
       ),
@@ -214,7 +209,7 @@ class _AddImage extends StatelessWidget {
       children: [
         image != null
             ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.file(image),
@@ -273,48 +268,50 @@ class PartyName extends StatelessWidget {
           iconData: Icons.edit_outlined,
           title: 'ตั้งชื่อปาร์ตี้',
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
+        SizedBox(
+          height: 10.h,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: TextFormField(
+                controller: createPartyProvider.partyNameController,
+                onChanged: (value) {
+                  if (error) createPartyProvider.error = false;
+                },
+                maxLength: 60,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  counterText: "",
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: TextFormField(
-                  controller: createPartyProvider.partyNameController,
-                  onChanged: (value) {
-                    if (error) createPartyProvider.error = false;
-                  },
-                  maxLength: 60,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    counterText: "",
+              ),
+            ),
+            if (error)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 10.h,
+                    left: 20,
+                  ),
+                  child: Text(
+                    'กรุณาตั้งชื่อปาร์ตี้',
+                    style: theme.bodyText2!.copyWith(
+                      color: colorRed,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-              if (error)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 10.h,
-                      left: 20,
-                    ),
-                    child: Text(
-                      'กรุณาตั้งชื่อปาร์ตี้',
-                      style: theme.bodyText2!.copyWith(color: colorRed),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
       ],
     );

@@ -66,22 +66,31 @@ class CloudFirestoreDb {
     }
   }
 
-  Future<void> updateMember(String partyId, String uid) async {
+  Future<bool> updateMember(String partyId, String uid) async {
     final partys = FirebaseFirestore.instance.collection('partys');
-    final users = FirebaseFirestore.instance.collection('users');
 
     final doc = await partys.doc(partyId).get();
 
     if (doc.data()!['member_list'] != null) {
       List<String> result = List<String>.from(doc.data()!['member_list']);
-      result.add(uid);
-      await partys.doc(partyId).update({'member_list': result});
+      if (result.length != (doc.data()!['member_max'])) {
+        result.add(uid);
+        await partys.doc(partyId).update({'member_list': result});
+        await updatePartyList(partyId, uid);
+        return true;
+      }
+      return false;
     } else {
       await partys.doc(partyId).update({
         'member_list': [uid]
       });
+      await updatePartyList(partyId, uid);
+      return true;
     }
+  }
 
+  Future<void> updatePartyList(String partyId, String uid) async {
+    final users = FirebaseFirestore.instance.collection('users');
     final docUser = await users.doc(uid).get();
     if (docUser.exists) {
       if (docUser.data()!['party_list'] != null) {

@@ -11,7 +11,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
     context.read<PartyChangeNotifierProvider>().fakeDowload();
-    print('restart');
     return Scaffold(
       backgroundColor: colorGrey,
       appBar: AppBar(
