@@ -118,39 +118,19 @@ class _ButtonMember extends StatelessWidget {
           return _JoinButton(
             title: 'เจ้าของปาร์ตี้',
             color: colorRed,
-            function: () async {},
           );
         else if (!itemParty.join!)
           return _JoinButton(
             title: 'เข้าร่วม',
             color: colorViolet,
             function: () async {
-              showAcceptDialog(
-                  context: context,
-                  function: () async {
-                    bool result = await partyProvider.updateMember(index);
-                    if (!result)
-                      showErrorDialog(
-                          message: 'สมาชิกครบจำนวณแล้ว',
-                          function: () async {
-                            partyProvider.loading = true;
-                            partyProvider.updateParty();
-                            await Future.delayed(
-                                const Duration(milliseconds: 500));
-                          });
-                    else {
-                      partyProvider.loading = true;
-                      partyProvider.updateParty();
-                      await Future.delayed(const Duration(milliseconds: 500));
-                    }
-                  });
+              partyProvider.addParty(index);
             },
           );
         else
           return _JoinButton(
             title: 'อยู่ในปาร์ตี้',
             color: colorGreyMedium,
-            function: () async {},
           );
       },
     );
@@ -256,19 +236,15 @@ class _ImageWidget extends StatelessWidget {
 class _JoinButton extends StatelessWidget {
   final String title;
   final Color color;
-  final Function function;
-
+  final Function? function;
   const _JoinButton(
-      {Key? key,
-      required this.title,
-      required this.color,
-      required this.function})
+      {Key? key, required this.title, required this.color, this.function})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        function();
+        if (function != null) function!();
       },
       style: TextButton.styleFrom(
         primary: Colors.white,

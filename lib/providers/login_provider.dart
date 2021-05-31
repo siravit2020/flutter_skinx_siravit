@@ -38,9 +38,7 @@ class LoginProvider {
   void checkAuthentication() async {
     String messageError = checkMessageError();
     if (messageError.isNotEmpty)
-      showErrorDialog(
-        message: messageError,
-      );
+      showErrorDialog(message: messageError);
     else {
       showLoadingDialog();
       final result = await AuthenticationServices().signIn(
@@ -52,9 +50,7 @@ class LoginProvider {
         clear();
         NavigationService.instance.navigateAndRemoveUntil('/home');
       } else
-        showErrorDialog(
-          message: result,
-        );
+        showErrorDialog(message: result);
     }
   }
 

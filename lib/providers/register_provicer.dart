@@ -49,58 +49,50 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
     _typeError = TypeTextField.name;
     if (name.isEmpty) {
       _messageError = 'กรุณากรอกชื่อ';
-      notifyListeners();
       return;
     }
 
     _typeError = TypeTextField.email;
     if (email.isEmpty) {
       _messageError = 'กรุณากรอกอีเมล';
-      notifyListeners();
       return;
     } else if (!isValidate) {
       _messageError = 'กรุณากรอกอีเมลให้ถูกต้อง';
-      notifyListeners();
       return;
     }
 
     _typeError = TypeTextField.password;
     if (password.isEmpty) {
       _messageError = 'กรุณากรอกรหัสผ่าน';
-      notifyListeners();
       return;
     } else if (password.length < 8) {
       _messageError = 'กรุณากรอกรหัสผ่านอย่างน้อย 8 ตัวอักษร';
-      notifyListeners();
       return;
     } else if (!password.contains(RegExp(r'^[a-zA-Z0-9]+$'))) {
       _messageError =
           'กรุณากรุณากรอกรหัสผ่านให้ถูกต้อง สามารถใช้ได้เฉพาะตัวอักษร และ ตัวเลขเท่านั้น';
-      notifyListeners();
       return;
     }
 
     _typeError = TypeTextField.confirmPassword;
     if (password != confirmPassword) {
       _messageError = 'กรุณากรอกรหัสผ่านให้ตรงกัน';
-      notifyListeners();
       return;
     }
 
     _typeError = TypeTextField.checkBox;
     if (!_checkBoxValue) {
       _messageError = 'กรุณากดยอมรับเงื่อนไขและข้อตกลง';
-      notifyListeners();
       return;
     }
 
     _typeError = TypeTextField.none;
     _messageError = '';
-    notifyListeners();
   }
 
   void checkAuthentication() async {
     checkMessageError();
+    notifyListeners();
     if (_messageError.isEmpty) {
       showLoadingDialog();
       final result = await AuthenticationServices().register(

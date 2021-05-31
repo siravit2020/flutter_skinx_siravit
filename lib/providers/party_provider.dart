@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_skinx_siravit/dialogs/accept_dialog.dart';
+import 'package:flutter_skinx_siravit/dialogs/error_dialog.dart';
 import 'package:flutter_skinx_siravit/models/party_model.dart';
 import 'package:flutter_skinx_siravit/server/cloud_firestore.dart';
 export 'package:provider/provider.dart';
@@ -24,7 +26,7 @@ class PartyChangeNotifierProvider extends ChangeNotifier {
     List<PartyModel> list = [];
     List<String> listId = [];
     int index = 0;
-    print('index $index');
+
     for (int i = 0; i < result.length; i++) {
       PartyModel data = PartyModel.fromJson(result[i].data());
       if (data.memberList != []) {
@@ -64,18 +66,32 @@ class PartyChangeNotifierProvider extends ChangeNotifier {
 
   Future<void> updateParty() async {
     await readParty();
-    _loading = false;
-    update();
+    loading = false;
+  }
+
+  void addParty(int index) {
+    showAcceptDialog(function: () async {
+      bool result = await updateMember(index);
+      if (!result)
+        showErrorDialog(
+            message: 'สมาชิกครบจำนวณแล้ว',
+            function: () async {
+              loading = true;
+              await updateParty();
+              await Future.delayed(const Duration(milliseconds: 500));
+            });
+      else {
+        loading = true;
+        await updateParty();
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+    });
   }
 
   Future<void> fakeDowload() async {
     _loading = true;
     await Future.delayed(Duration(milliseconds: 1000));
     await readParty();
-    update();
-  }
-
-  void update() {
     notifyListeners();
   }
 
