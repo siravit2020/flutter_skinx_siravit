@@ -1,6 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_skinx_siravit/constants/type_text_field.dart';
+import 'package:flutter_skinx_siravit/dialogs/error_dialog.dart';
+import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
+import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
+import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 export 'package:provider/provider.dart';
 
 class RegisterChangeNotifierProvider extends ChangeNotifier {
@@ -35,7 +39,7 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void check() async {
+  void checkMessageError() async {
     String name = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -90,10 +94,29 @@ class RegisterChangeNotifierProvider extends ChangeNotifier {
       return;
     }
 
-    
     _typeError = TypeTextField.none;
     _messageError = '';
     notifyListeners();
+  }
+
+  void checkAuthentication() async {
+    checkMessageError();
+    if (_messageError.isEmpty) {
+      showLoadingDialog();
+      final result = await AuthenticationServices().register(
+        _emailController.text,
+        _passwordController.text,
+        _nameController.text,
+      );
+      NavigationService.instance.pop();
+      if (result == 'success') {
+        clear();
+        NavigationService.instance.navigateAndRemoveUntil('/home');
+      } else
+        showErrorDialog(
+          message: result,
+        );
+    }
   }
 
   void clear() {

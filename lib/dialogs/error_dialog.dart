@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
+import 'package:flutter_skinx_siravit/servicers/globalkey_servicer.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void showErrorDialog({
-  required BuildContext context,
+
   required String message,
   Function? function,
 }) {
-  final theme = Theme.of(context).textTheme;
+  
   showDialog(
-    context: context,
+    context: GlobalKeyService.instance.navigationKey.currentContext!,
     builder: (BuildContext context) {
+      final theme = Theme.of(context).textTheme;
       return Dialog(
         elevation: 0,
         backgroundColor: Colors.transparent,

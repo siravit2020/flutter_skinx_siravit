@@ -131,7 +131,6 @@ class _ButtonMember extends StatelessWidget {
                     bool result = await partyProvider.updateMember(index);
                     if (!result)
                       showErrorDialog(
-                          context: context,
                           message: 'สมาชิกครบจำนวณแล้ว',
                           function: () async {
                             partyProvider.loading = true;

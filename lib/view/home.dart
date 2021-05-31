@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
@@ -28,7 +27,7 @@ class HomePage extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              NavigationService.instance.navigateTo('profile');
+              NavigationService.instance.navigateTo('/profile');
             },
             icon: Icon(Icons.account_circle_outlined),
             color: colorWhite,
@@ -42,14 +41,12 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
-
 class _AddPartyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        NavigationService.instance.navigateTo('createParty');
+        NavigationService.instance.navigateTo('/createParty');
       },
       style: ElevatedButton.styleFrom(
         primary: Colors.white,

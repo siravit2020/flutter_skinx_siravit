@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
 import 'package:flutter_skinx_siravit/server/cloud_firestore.dart';
 import 'package:flutter_skinx_siravit/server/cloud_storage.dart';
-
+import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 
 class CreatePartyChnageNotifierProvider extends ChangeNotifier {
   TextEditingController _partyNameController = TextEditingController();
@@ -80,5 +81,15 @@ class CreatePartyChnageNotifierProvider extends ChangeNotifier {
       );
     }
     clear();
+  }
+
+  void addParty() async {
+    final result = await check();
+    if (result) {
+      showLoadingDialog();
+      await updateParty();
+      NavigationService.instance.pop();
+      NavigationService.instance.navigateAndRemoveUntil('/home');
+    }
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_skinx_siravit/providers/create_party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/profile_provider.dart';
 import 'package:flutter_skinx_siravit/providers/register_provicer.dart';
+import 'package:flutter_skinx_siravit/servicers/globalkey_servicer.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/view/create_party.dart';
 import 'package:flutter_skinx_siravit/view/load_party.dart';
@@ -77,21 +78,21 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: baseTheme,
-            navigatorKey: NavigationService.instance.navigationKey,
+            navigatorKey: GlobalKeyService.instance.navigationKey,
             builder: (context, child) => MediaQuery(
                 data: MediaQuery.of(context)
                     .copyWith(alwaysUse24HourFormat: true),
                 child: child!),
-            initialRoute: "splash",
+            initialRoute: '/splash',
             routes: {
-              "splash": (_) => SplashScreen(),
-              "login": (_) => LoginPage(),
-              "register": (_) => RegisterPage(),
-              "home": (_) => HomePage(),
-              "party": (_) => PartyPage(),
-              "loadParty": (_) => LoadPartyPage(),
-              "createParty": (_) => CreatePartyPage(),
-              "profile": (_) => ProfilePage(),
+              '/splash': (_) => SplashScreen(),
+              '/login': (_) => LoginPage(),
+              '/register': (_) => RegisterPage(),
+              '/home': (_) => HomePage(),
+              '/party': (_) => PartyPage(),
+              '/loadParty': (_) => LoadPartyPage(),
+              '/createParty': (_) => CreatePartyPage(),
+              '/profile': (_) => ProfilePage(),
             },
           ),
         );

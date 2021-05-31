@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
-import 'package:flutter_skinx_siravit/dialogs/error_dialog.dart';
-import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
 import 'package:flutter_skinx_siravit/providers/login_provider.dart';
-import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
-import 'package:flutter_skinx_siravit/view/register.dart';
 import 'package:flutter_skinx_siravit/widgets/fill_button.dart';
 import 'package:flutter_skinx_siravit/widgets/logo.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatelessWidget {
@@ -59,7 +54,7 @@ class _LoginForm extends StatelessWidget {
           title: 'เข้าสู่ระบบ',
           color: colorViolet,
           function: () {
-            checkError(loginProvider, context);
+            loginProvider.checkAuthentication();
           },
         ),
         SizedBox(
@@ -69,40 +64,13 @@ class _LoginForm extends StatelessWidget {
           title: 'สร้างบัญชีผู้ใช้',
           color: colorRed,
           function: () {
-            NavigationService.instance.navigateTo('register');
+            NavigationService.instance.navigateTo('/register');
           },
         ),
       ],
     );
   }
 
-  void checkError(
-    LoginProvider loginProvider,
-    BuildContext context,
-  ) async {
-    String messageError = loginProvider.check();
-    if (messageError.isNotEmpty)
-      showErrorDialog(
-        context: context,
-        message: messageError,
-      );
-    else {
-      showLoadingDialog(context);
-      final result = await AuthenticationServices().signIn(
-        loginProvider.emailController.text,
-        loginProvider.passwordController.text,
-      );
-      NavigationService.instance.pop();
-      if (result == 'success') {
-        loginProvider.clear();
-        NavigationService.instance.navigateAndRemoveUntil('home');
-      } else
-        showErrorDialog(
-          context: context,
-          message: result,
-        );
-    }
-  }
 }
 
 class _LoginTextField extends StatelessWidget {

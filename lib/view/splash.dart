@@ -4,7 +4,6 @@ import 'package:flutter_skinx_siravit/servicers/authentication_service.dart';
 import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/widgets/logo.dart';
 
-
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,13 +12,12 @@ class SplashScreen extends StatelessWidget {
         future: AuthenticationServices().checkUserSigned(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           print(snapshot.hasData);
-
           if (snapshot.hasData) {
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               if (snapshot.data!)
-                NavigationService.instance.navigateAndRemoveUntil('home');
+                NavigationService.instance.navigateAndRemoveUntil('/home');
               else
-                NavigationService.instance.navigateAndRemoveUntil('login');
+                NavigationService.instance.navigateAndRemoveUntil('/login');
             });
           } else if (snapshot.hasError) {
             return _ErrorWidget(
@@ -55,5 +53,3 @@ class _ErrorWidget extends StatelessWidget {
     );
   }
 }
-
-

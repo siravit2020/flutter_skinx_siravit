@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_skinx_siravit/servicers/globalkey_servicer.dart';
 
 class NavigationService {
   late GlobalKey<NavigatorState> navigationKey;
@@ -6,7 +7,7 @@ class NavigationService {
   static NavigationService instance = NavigationService();
 
   NavigationService () {
-    navigationKey = GlobalKey<NavigatorState>();
+    navigationKey = GlobalKeyService.instance.navigationKey;
   }
 
   Future<dynamic> navigateToReplacement(String _rn) {

@@ -1,13 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
-import 'package:flutter_skinx_siravit/dialogs/loading_dialog.dart';
 import 'package:flutter_skinx_siravit/providers/create_party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/party_provider.dart';
 import 'package:flutter_skinx_siravit/providers/register_provicer.dart';
-import 'package:flutter_skinx_siravit/servicers/navigation_service.dart';
 import 'package:flutter_skinx_siravit/widgets/violet_corner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -64,11 +61,13 @@ class _CreatePartyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final createPartyProvider =
+        context.read<CreatePartyChnageNotifierProvider>();
     return Container(
       width: double.infinity,
       child: TextButton(
-        onPressed: () async {
-          await _addParty(context);
+        onPressed: () {
+          createPartyProvider.addParty();
         },
         style: ElevatedButton.styleFrom(
           primary: colorRed,
@@ -87,18 +86,6 @@ class _CreatePartyButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _addParty(BuildContext context) async {
-    final createPartyProvider =
-        context.read<CreatePartyChnageNotifierProvider>();
-    final result = await createPartyProvider.check();
-    if (result) {
-      showLoadingDialog(context);
-      await createPartyProvider.updateParty();
-      NavigationService.instance.pop();
-      NavigationService.instance.navigateAndRemoveUntil('home');
-    }
   }
 }
 

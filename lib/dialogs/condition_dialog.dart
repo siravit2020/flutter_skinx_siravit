@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_skinx_siravit/config/colors/color_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_skinx_siravit/servicers/globalkey_servicer.dart';
 
-void showConditionDialog(BuildContext context) {
-  final theme = Theme.of(context).textTheme;
+void showConditionDialog() {
+ 
   showDialog(
-    context: context,
+    context: GlobalKeyService.instance.navigationKey.currentContext!,
     builder: (BuildContext context) {
+       final theme = Theme.of(context).textTheme;
       return Dialog(
         elevation: 0,
         backgroundColor: Colors.transparent,
